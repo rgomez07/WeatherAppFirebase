@@ -1,5 +1,6 @@
 <template>
  <div class="city">
+    <i v-if="edit" @click="removeCity" class="far fa-trash-alt edit" ref="edit"></i>
     <span> {{this.city.city}}</span>
     <div class="weather">
     <span> {{Math.round(this.city.currentWeather.main.temp)}}&deg;</span>
@@ -10,7 +11,7 @@
     autoplay
     loop 
     muted 
-    :src="require(`../../public/conditions/conditions/${this.city.currentWeather.weather[0].icon}.svg`)"
+    :src="require(`../../public/conditions/videos/videos/${this.city.currentWeather.weather[0].icon}.mp4`)"
     ></video>
     <div class="bg-overlay"></div>
  </div>
@@ -19,13 +20,33 @@
 </template>
 console.log(this.city.currentWeather.weather[0].icon)
 <script>
+import db from '../firebase/firebaseinit'
 export default {
 name: "Ci-ty",
-props: ['city'],
-created(){
-    console.log(this.city)
+props: ['city', 'edit'],
+created(){},
+data(){
+    return{
+        id:null,
+    }
+},
+methods:{
+    removeCity(){
+        db.collection('cities')
+        .where('city', '==', `${this.city.city}`)
+        .get()
+        .then((docs) =>{
+            docs.forEach((doc) =>{
+                this.id = doc.id;
+            });
+        })
+        .then(() =>{
+            console.log(this.id);
+        })
+    },
 }
 }
+
 </script>
 
 
@@ -39,6 +60,18 @@ created(){
     min-height: 250px;
     color: #fff;
     box-shadow: 0 1px 2 px 0 rgba(0, 0, 0, 0.05);
+
+    .edit{
+        border-radius: 0px 15px 0 0;
+        border: 10px solid rgb(0, 0, 0, 0.05);
+        background-color: rgb(77, 77, 77);
+        z-index: 1;
+        font-size: 20px;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+    }
+
     span{
         z-index: 1;
         text-transform: capitalize;
