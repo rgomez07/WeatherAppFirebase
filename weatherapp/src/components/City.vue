@@ -1,5 +1,5 @@
 <template>
- <div class="city">
+ <div @click="goToCityWeather" class="city">
     <i v-if="edit" @click="removeCity" class="far fa-trash-alt edit" ref="edit"></i>
     <span> {{this.city.city}}</span>
     <div class="weather">
@@ -42,7 +42,17 @@ methods:{
         })
         .then(() =>{
             console.log(this.id);
+            db.collection('cities').doc(this.id).delete()
         })
+    },
+    goToCityWeather(event){
+        if(event.target === this.$refs.edit){
+            //
+        }
+        else{
+            this.$router.push({name: "Single-Weather", params: {city: this.city.city}})
+            console.log(this.city.city)
+        }
     },
 }
 }
@@ -64,7 +74,7 @@ methods:{
     .edit{
         border-radius: 0px 15px 0 0;
         border: 10px solid rgb(0, 0, 0, 0.05);
-        background-color: rgb(77, 77, 77);
+        background-color: rgb(208, 9, 9);
         z-index: 1;
         font-size: 20px;
         position: absolute;
